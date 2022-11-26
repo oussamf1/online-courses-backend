@@ -2,7 +2,8 @@ const Availability = require("../models/availability");
 exports.addAvailability = async (req, res, next) => {
   try {
     let availability = new Availability({
-      tutor: req.body.tutor,
+      name: req.body.name,
+      email: req.body.email,
     });
     await availability.save();
     res.status(201).send({
@@ -18,11 +19,10 @@ exports.addAvailability = async (req, res, next) => {
 
 exports.deleteAvailability = async (req, res, next) => {
   try {
-    const availability = await Availability.findOneAndDelete({
-      tutor: req.body.tutor,
-    });
+    console.log(req.body);
+    const availability = await Availability.findByIdAndDelete(req.body.id);
     res.status(201).send({
-      message: "Tutor tutor deleted",
+      message: "Tutor deleted",
     });
   } catch (error) {
     res.status(500).send({

@@ -1,10 +1,6 @@
 const { number } = require("joi");
 const mongoose = require("mongoose");
 const courseSchema = mongoose.Schema({
-  courseType: {
-    type: String,
-    required: true,
-  },
   title: {
     type: String,
     required: true,
@@ -15,6 +11,10 @@ const courseSchema = mongoose.Schema({
   },
   price: {
     type: Number,
+    required: true,
+  },
+  url: {
+    type: String,
     required: true,
   },
 });

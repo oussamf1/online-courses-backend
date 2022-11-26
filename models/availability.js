@@ -1,14 +1,17 @@
-
 const mongoose = require("mongoose");
 const dateSchema = mongoose.Schema({
   courses: [
     {
-      courseTitle:{
-        type : String,
+      courseTitle: {
+        type: String,
       },
     },
   ],
-  tutor: {
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
     type: String,
     required: true,
   },
@@ -20,10 +23,10 @@ const dateSchema = mongoose.Schema({
       time: {
         type: String,
       },
-      reserved :{
-        type:Boolean,
-        default:false,
-      }
+      reserved: {
+        type: Boolean,
+        default: false,
+      },
     },
   ],
 });
