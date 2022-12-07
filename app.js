@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const indexRouter = require("./routes/index");
 const PORT = 5000;
 var app = express();
+
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:8080");
   res.header(
@@ -21,6 +22,10 @@ app.use((req, res, next) => {
   app.use(cors({ credentials: true, origin: true }));
   next();
 });
+const corsConfig = {
+  origin: true,
+  credentials: true,
+};
 
 mongoose.connect("mongodb://127.0.0.1:27017/mydb", {
   useNewUrlParser: true,

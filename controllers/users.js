@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.jwt;
 
 exports.registerUser = async (req, res) => {
+  console.log(req.body);
   const { email, password: plainTextPassword, firstName, lastName } = req.body;
   // encrypting our password to store in database
   const salt = await bcrypt.genSalt(10);
@@ -36,7 +37,12 @@ verifyUserLogin = async (email, password) => {
     if (await bcrypt.compare(password, user.password)) {
       // creating a JWT token
       token = jwt.sign(
-        { id: user._id, username: user.email, type: "user" },
+        {
+          id: user._id,
+          username: user.email,
+          type: "user",
+          isAdmin: user.isAdmin,
+        },
         "JWT_SECRET",
         { expiresIn: "2h" }
       );
@@ -56,12 +62,16 @@ exports.login = async (req, res) => {
   // we made a function to verify our user login
   const response = await verifyUserLogin(email, password);
   if (response.status === "ok") {
-    console.log(token);
     // storing our JWT web token as a cookie in our browser
-    res.cookie("token", token, {
-      maxAge: 2 * 60 * 60 * 1000,
-      httpOnly: true,
-    }); // maxAge: 2 hours
+
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        path: "/",
+        SameSite: "none",
+      })
+      .json({ loginStatus: true }); // maxAge: 2 hours
   } else {
     res.json(response);
   }

@@ -1,0 +1,51 @@
+const Order = require("../models/order");
+const Course = require("../models/course");
+exports.addOrder = async (req, res, next) => {
+  try {
+    const course_id = req.body.course_id;
+    const course_date = req.body.course_date;
+    const course_tutor = req.body.course_tutor;
+    const numberOfClasses = parseInt(req.body.numberOfClasses);
+    const studentName = req.body.studentName;
+    const user_email = req.user.username;
+    const course = await Course.findById(course_id);
+    let order = new Order({
+      user_email: user_email,
+      course: course.title,
+      studentName: studentName,
+      numberOfClasses: numberOfClasses,
+      courseDate: course_date,
+      tutor: course_tutor,
+      finalPrice: course.price,
+      orderDate: new Date(),
+    });
+    await order.save();
+    res.status(201).send({
+      message: "Order Created",
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).send({
+      error,
+      message: "server side error",
+      success: false,
+    });
+  }
+};
+exports.getOrders = async (req, res, next) => {
+  const user_email = req.user.username;
+  try {
+    const orders = await Order.find({ user_email: user_email });
+    console.log(orders);
+    res.status(200).send({
+      orders: orders,
+      message: "list of orders",
+    });
+  } catch (error) {
+    res.status(500).send({
+      error,
+      message: "server side error",
+      success: false,
+    });
+  }
+};

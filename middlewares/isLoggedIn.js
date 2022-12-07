@@ -1,18 +1,18 @@
 const jwt = require("jsonwebtoken");
 
-function auth(req, res, next) {
+function isLoggedIn(req, res, next) {
   const token = req.cookies.token;
+  console.log("token", token);
   if (!token) {
-    return;
+    return res.send({ loginStatus: false });
   }
   try {
     const verify = jwt.verify(token, "JWT_SECRET");
     if (verify.type === "user") {
-      req.user = verify;
-      next();
+      res.status(200).send({ loginStatus: true });
     }
   } catch (ex) {
     res.status(400).send({ loginStatus: false });
   }
 }
-module.exports = auth;
+module.exports = isLoggedIn;

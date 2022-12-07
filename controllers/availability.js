@@ -1,4 +1,5 @@
 const Availability = require("../models/availability");
+const Course = require("../models/course");
 exports.addAvailability = async (req, res, next) => {
   try {
     let availability = new Availability({
@@ -19,7 +20,6 @@ exports.addAvailability = async (req, res, next) => {
 
 exports.deleteAvailability = async (req, res, next) => {
   try {
-    console.log(req.body);
     const availability = await Availability.findByIdAndDelete(req.body.id);
     res.status(201).send({
       message: "Tutor deleted",
@@ -81,7 +81,6 @@ exports.getTutorsList = async (req, res, next) => {
 exports.getAvailabilities = async (req, res, next) => {
   try {
     const availability = await Availability.find();
-    console.log(availability);
     res.status(200).send({
       availability: availability,
       message: "list of availabilities ",
@@ -92,4 +91,25 @@ exports.getAvailabilities = async (req, res, next) => {
       message: "server side error",
     });
   }
+};
+exports.getCoursesAvailability = async (req, res, next) => {
+  const course_id = req.body.course_id;
+  const course = await Course.findById(course_id);
+  const availability = await Availability.find({
+    courses: { $elemMatch: { title: course.title } },
+  });
+  let datesList = [];
+  let dateAtutor = {};
+  availability.forEach(function (av) {
+    av.dates.forEach(function (date) {
+      if (date.reserved == false) {
+        dateAtutor = { d: date, tutor: av.name };
+        datesList.push(dateAtutor);
+      }
+    });
+  });
+  res.status(200).send({
+    dateAndTutor: datesList,
+    message: "list of dates",
+  });
 };
