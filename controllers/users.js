@@ -76,3 +76,13 @@ exports.login = async (req, res) => {
     res.json(response);
   }
 };
+exports.logout = async (req, res) => {
+  res
+    .clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      SameSite: "none",
+      path: "/",
+    })
+    .send({ success: true, message: "cookie cleared" });
+};

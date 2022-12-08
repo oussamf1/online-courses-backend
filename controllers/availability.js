@@ -51,7 +51,7 @@ exports.addDate = async (req, res, next) => {
 exports.addCourse = async (req, res, next) => {
   try {
     let course = { courseTitle: req.body.course };
-    const availability = await Availability.find({ tutor: req.body.tutor });
+    const availability = await Availability.find({ name: req.body.tutor });
     availability[0]?.courses.push(course);
     await availability[0].save();
     res.status(201).send({
@@ -96,8 +96,9 @@ exports.getCoursesAvailability = async (req, res, next) => {
   const course_id = req.body.course_id;
   const course = await Course.findById(course_id);
   const availability = await Availability.find({
-    courses: { $elemMatch: { title: course.title } },
+    courses: { $elemMatch: { courseTitle: course.title } },
   });
+  console.log(availability);
   let datesList = [];
   let dateAtutor = {};
   availability.forEach(function (av) {
