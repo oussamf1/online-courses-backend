@@ -26,15 +26,15 @@ exports.addOrder = async (req, res, next) => {
       orderDate: new Date(),
     });
     const availability = await Availability.find({
-      tutor: order.tutor,
+      name: order.tutor,
     });
     availability[0].dates.forEach(function (date) {
       if (date.day == day && date.time == time) {
         date.reserved = true;
       }
     });
-    await order.save();
     await availability[0].save();
+    await order.save();
     res.status(201).send({
       message: "Order Created",
       success: true,

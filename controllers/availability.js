@@ -35,7 +35,7 @@ exports.addDate = async (req, res, next) => {
   try {
     let date = {};
     date = { day: req.body.day, time: req.body.time };
-    const availability = await Availability.find({ tutor: req.body.tutor });
+    const availability = await Availability.find({ name: req.body.tutor });
     availability[0]?.dates.push(date);
     await availability[0].save();
     res.status(201).send({
